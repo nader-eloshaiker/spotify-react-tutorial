@@ -1,0 +1,1439 @@
+---
+swagger: '2.0'
+info:
+  title: Spotify Web API
+  description: |
+    Welcome to the _Spotify Web API_ specification. For more information about
+    how to use the API, check out [Spotify's developer site](https://developer.spotify.com/web-api/).
+  version: v1
+host: api.spotify.com
+x-basePath: "/{version}"
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  oauth_2_0:
+    description: 'Spotify supports OAuth 2.0 for authenticating all API requests.'
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: https://accounts.spotify.com/authorize
+    tokenUrl: https://accounts.spotify.com/api/token
+    scopes:
+      playlist-read-private: ''
+      playlist-read-collaborative: ''
+      playlist-modify-public: ''
+      playlist-modify-private: ''
+      user-library-read: ''
+      user-library-modify: ''
+      user-read-private: ''
+      user-read-birthdate: ''
+      user-read-email: ''
+      user-follow-read: ''
+      user-follow-modify: ''
+      user-top-read: ''
+definitions:
+  Playlist:
+    type: string
+parameters:
+  trait:filterable:fields:
+    description: A comma-separated list of fields to filter query
+    type: string
+    in: query
+    name: fields
+    required: true
+  trait:paged:limit:
+    default: 20
+    minimum: 0
+    maximum: 50
+    description: The maximum number of track objects to return
+    type: integer
+    in: query
+    name: limit
+  trait:paged:offset:
+    default: 0
+    description: The index of the first track to return
+    type: integer
+    in: query
+    name: offset
+paths:
+  "/albums":
+    get:
+      description: "[Get Several Albums](https://developer.spotify.com/web-api/get-several-albums/)\n"
+      operationId: GET_albums
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+      security:
+        - oauth_2_0: []
+  "/albums/{id}":
+    get:
+      description: "[Get an Album](https://developer.spotify.com/web-api/get-album/)\n"
+      operationId: GET_albums-id
+      responses:
+        default:
+          description: ''
+      parameters:
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+      security:
+        - oauth_2_0: []
+    parameters:
+      - description: The Spotify ID for the album
+        type: string
+        in: path
+        name: id
+        required: true
+  "/albums/{id}/tracks":
+    get:
+      description: "[Get an Album's Tracks](https://developer.spotify.com/web-api/get-albums-tracks/)\n"
+      operationId: GET_albums-id-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+    parameters:
+      - description: The Spotify ID for the album
+        type: string
+        in: path
+        name: id
+        required: true
+  "/artists":
+    get:
+      description: "[Get Several Artists](https://developer.spotify.com/web-api/get-several-artists/)\n"
+      operationId: GET_artists
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0: []
+  "/artists/{id}":
+    get:
+      description: "[Get an Artist](https://developer.spotify.com/web-api/get-artist/)\n"
+      operationId: GET_artists-id
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
+    parameters:
+      - required: true
+        description: The Spotify ID for the artist
+        type: string
+        in: path
+        name: id
+  "/artists/{id}/top-tracks":
+    get:
+      description: "[Get an Artist's Top Tracks](https://developer.spotify.com/web-api/get-artists-top-tracks/)\n"
+      operationId: GET_artists-id-top-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+      security:
+        - oauth_2_0: []
+    parameters:
+      - required: true
+        description: The Spotify ID for the artist
+        type: string
+        in: path
+        name: id
+  "/artists/{id}/related-artists":
+    get:
+      description: "[Get an Artist's Related Artists](https://developer.spotify.com/web-api/get-related-artists/)\n"
+      operationId: GET_artists-id-related-artists
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
+    parameters:
+      - required: true
+        description: The Spotify ID for the artist
+        type: string
+        in: path
+        name: id
+  "/artists/{id}/albums":
+    get:
+      description: "[Get an Artist's Albums](https://developer.spotify.com/web-api/get-artists-albums/)\n"
+      operationId: GET_artists-id-albums
+      responses:
+        default:
+          description: ''
+      parameters:
+        - description: Filter by album types
+          type: string
+          in: query
+          name: album_type
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+    parameters:
+      - required: true
+        description: The Spotify ID for the artist
+        type: string
+        in: path
+        name: id
+  "/tracks":
+    get:
+      description: "[Get Several Tracks](https://developer.spotify.com/web-api/get-several-tracks/)\n"
+      operationId: GET_tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+      security:
+        - oauth_2_0: []
+  "/tracks/{id}":
+    get:
+      description: "[Get a Track](https://developer.spotify.com/web-api/get-track/)\n"
+      operationId: GET_tracks-id
+      responses:
+        default:
+          description: ''
+      parameters:
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+      security:
+        - oauth_2_0: []
+    parameters:
+      - type: string
+        in: path
+        name: id
+        description: Spotify Track ID
+        required: true
+  "/search":
+    get:
+      description: "[Search for an Item](https://developer.spotify.com/web-api/search-item/)\n"
+      operationId: GET_search
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: 'The search query''s keywords (and optional field filters). The
+          search is not case-sensitive: ''roadhouse'' will match ''Roadhouse'', ''roadHouse'',
+          etc. Keywords will be matched in any order unless surrounded by quotes,
+          thus q=roadhouse&20blues will match both ''Blues Roadhouse'' and ''Roadhouse
+          of the Blues''. Quotation marks can be used to limit the match to a phrase:
+          q=roadhouse&20blues will match ''My Roadhouse Blues'' but not ''Roadhouse
+          of the Blues''. By default, results are returned when a match is found in
+          any field of the target object type. Searches can be made more specific
+          by specifying an album, artist or track field filter. For example q=album:gold%20artist:abba&type=album
+          will search for albums with the text ''gold'' in the album name and the
+          text ''abba'' in an artist name. Other possible field filters, depending
+          on object types being searched, include year, genre, upc, and isrc. For
+          example, q=damian%20genre:reggae-pop&type=artist. The asterisk (*) character
+          can, with some limitations, be used as a wildcard (maximum: 2 per query).
+          It will match a variable number of non-white-space characters. It cannot
+          be used in a quoted phrase, in a field filter, or as the first character
+          of the keyword string. Searching for playlists will return results matching
+          the playlist''s name and/or description.'
+          type: string
+          in: query
+          name: q
+        - required: true
+          description: A comma-separated list of item types to search across. Search
+            results will include hits from all the specified item types; for example
+            q=name:abacab&type=album,track will return both albums and tracks with "abacab"
+            in their name.
+          type: string
+          in: query
+          name: type
+        - description: The market (an ISO 3166-1 alpha-2 country code).  If given, only
+            items with content playable in that market will be returned.
+          type: string
+          in: query
+          name: market
+          required: true
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+  "/me":
+    get:
+      description: "[Get Current User's Profile](https://developer.spotify.com/web-api/get-current-users-profile/)\n"
+      operationId: GET_me
+      responses:
+        default:
+          description: ''
+  "/me/playlists":
+    get:
+      description: "[Get a List of Current User's Playlists](https://developer.spotify.com/web-api/get-a-list-of-current-users-playlists/)\n"
+      operationId: GET_me-playlists
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              type: string
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0:
+            - playlist-read-private
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+  "/me/albums":
+    get:
+      description: "[Get Current User's Saved Albums](https://developer.spotify.com/web-api/get-users-saved-albums/)\n"
+      operationId: GET_me-albums
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0:
+            - user-library-read
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+    put:
+      description: "[Save Albums for Current User](https://developer.spotify.com/web-api/save-albums-user/)\n"
+      operationId: PUT_me-albums
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-modify
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+    delete:
+      description: "[Remove Albums for Current User](https://developer.spotify.com/web-api/remove-albums-user/)\n"
+      operationId: DELETE_me-albums
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-modify
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+  "/me/albums/contains":
+    get:
+      description: "[Check Current User's Saved Albums](https://developer.spotify.com/web-api/check-users-saved-albums/)\n"
+      operationId: GET_me-albums-contains
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-read
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+  "/me/tracks":
+    get:
+      description: "[Get Current User's Saved Tracks](https://developer.spotify.com/web-api/get-users-saved-tracks/)\n"
+      operationId: GET_me-tracks
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0:
+            - user-library-read
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+    put:
+      description: "[Save Tracks for Current User](https://developer.spotify.com/web-api/save-tracks-user/)\n"
+      operationId: PUT_me-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-modify
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+    delete:
+      description: "[Remove Tracks for Current User](https://developer.spotify.com/web-api/remove-tracks-user/)\n"
+      operationId: DELETE_me-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-modify
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+  "/me/tracks/contains":
+    get:
+      description: "[Check Current User's Saved Tracks](https://developer.spotify.com/web-api/check-users-saved-tracks/)\n"
+      operationId: GET_me-tracks-contains
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-library-read
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+  "/me/top/{type}":
+    get:
+      description: "[Get User's Top Artists and Tracks](https://developer.spotify.com/web-api/get-users-top-artists-and-tracks/)\n"
+      operationId: GET_me-top-type
+      responses:
+        default:
+          description: ''
+      parameters:
+        - default: medium-term
+          description: Over what timeframe are the affinities computed. "long-term",
+            "medium-term" or "short-term"
+          type: string
+          in: query
+          name: time_range
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0:
+            - user-top-read
+        - oauth_2_0:
+            - user-read-private
+            - user-read-birthdate
+            - user-read-email
+    parameters:
+      - description: The type of item.  "artists" or "tracks"
+        type: string
+        in: path
+        name: type
+        required: true
+  "/users/{user_id}":
+    get:
+      description: "[Get a User's Profile](https://developer.spotify.com/web-api/get-users-profile/)\n"
+      operationId: GET_users-user_id
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
+    parameters:
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/users/{user_id}/playlists":
+    get:
+      description: "[Get a List of a User's Playlists](https://developer.spotify.com/web-api/get-list-users-playlists/)\n"
+      operationId: GET_users-user_id-playlists
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              type: string
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0:
+            - playlist-read-private
+            - playlist-read-collaborative
+    post:
+      description: "[Create a Playlist](https://developer.spotify.com/web-api/create-playlist/)\n"
+      operationId: POST_users-user_id-playlists
+      responses:
+        '201':
+          description: ''
+          schema:
+            "$ref": "#/definitions/Playlist"
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - schema:
+            example: Can not resolve examples/post-playlist.json
+            type: string
+          in: body
+          name: body
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    parameters:
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/users/{user_id}/playlists/{playlist_id}":
+    get:
+      description: "[Get a Playlist](https://developer.spotify.com/web-api/get-playlist/)\n"
+      operationId: GET_users-user_id-playlists-playlist_id
+      responses:
+        '200':
+          description: ''
+          schema:
+            "$ref": "#/definitions/Playlist"
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+        - "$ref": "#/parameters/trait:filterable:fields"
+      security:
+        - oauth_2_0: []
+    put:
+      description: "[Change a Playlist's Details](https://developer.spotify.com/web-api/change-playlist-details/)\n"
+      operationId: PUT_users-user_id-playlists-playlist_id
+      responses:
+        default:
+          description: ''
+      parameters:
+        - schema:
+            example: Can not resolve examples/put-playlist.json
+            type: string
+          in: body
+          name: body
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    parameters:
+      - required: true
+        description: The Spotify playlist ID.
+        type: string
+        in: path
+        name: playlist_id
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/users/{user_id}/playlists/{playlist_id}/tracks":
+    get:
+      description: "[Get a Playlist's Tracks](https://developer.spotify.com/web-api/get-playlists-tracks/)\n"
+      operationId: GET_users-user_id-playlists-playlist_id-tracks
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The market (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: market
+        - "$ref": "#/parameters/trait:filterable:fields"
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+    post:
+      description: "[Add Tracks to a Playlist](https://developer.spotify.com/web-api/add-tracks-to-playlist/)\n"
+      operationId: POST_users-user_id-playlists-playlist_id-tracks
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The position to insert the tracks, a zero-based index
+          type: integer
+          in: query
+          name: position
+        - required: true
+          description: A comma-separated list of Spotify track URIs to add. A maximum
+            of 100 tracks can be added in one request.
+          type: string
+          in: query
+          name: uris
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    put:
+      description: "[Reorder or replace a Playlist's Tracks](https://developer.spotify.com/web-api/reorder-playlists-tracks/)\n"
+      operationId: PUT_users-user_id-playlists-playlist_id-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - schema:
+            example: Can not resolve examples/put-playlist-tracks.json
+            type: string
+          in: body
+          name: body
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    delete:
+      description: "[Remove Tracks from a Playlist](https://developer.spotify.com/web-api/remove-tracks-playlist/)\n"
+      operationId: DELETE_users-user_id-playlists-playlist_id-tracks
+      responses:
+        default:
+          description: ''
+      parameters:
+        - schema:
+            example: Can not resolve examples/delete-playlist-tracks.json
+            type: string
+          in: body
+          name: body
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    parameters:
+      - required: true
+        description: The Spotify playlist ID.
+        type: string
+        in: path
+        name: playlist_id
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/users/{user_id}/playlists/{playlist_id}/followers":
+    put:
+      description: "[Follow a Playlist](https://developer.spotify.com/web-api/follow-playlist/)\n"
+      operationId: PUT_users-user_id-playlists-playlist_id-followers
+      responses:
+        default:
+          description: ''
+      parameters:
+        - schema:
+            example: Can not resolve examples/put-playlist-followers.json
+            type: object
+            properties:
+              public:
+                type: boolean
+          in: body
+          name: body
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    delete:
+      description: "[Unfollow a Playlist](https://developer.spotify.com/web-api/unfollow-playlist/)\n"
+      operationId: DELETE_users-user_id-playlists-playlist_id-followers
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0:
+            - playlist-modify-public
+            - playlist-modify-private
+    parameters:
+      - required: true
+        description: The Spotify playlist ID.
+        type: string
+        in: path
+        name: playlist_id
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/users/{user_id}/playlists/{playlist_id}/followers/contains":
+    get:
+      description: "[Check if Users Follow a Playlist](https://developer.spotify.com/web-api/check-user-following-playlist/)\n"
+      operationId: GET_users-user_id-playlists-playlist_id-followers-contains
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of users ids
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0: []
+    parameters:
+      - required: true
+        description: The Spotify playlist ID.
+        type: string
+        in: path
+        name: playlist_id
+      - description: The user's Spotify user ID.
+        type: string
+        in: path
+        name: user_id
+        required: true
+  "/browse/new-releases":
+    get:
+      description: "[Get a List of New Releases](https://developer.spotify.com/web-api/get-list-new-releases/)\n"
+      operationId: GET_browse-new-releases
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+  "/browse/featured-playlists":
+    get:
+      description: "[Get a List of Featured Playlists](https://developer.spotify.com/web-api/get-list-featured-playlists/)\n"
+      operationId: GET_browse-featured-playlists
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+        - description: 'The desired language, consisting of an ISO 639 language code
+          and an ISO 3166-1 alpha-2 country code, joined by an underscore. For example:
+          es_MX, meaning "Spanish (Mexico)".
+
+          '
+          type: string
+          in: query
+          name: locale
+        - description: 'A timestamp in ISO 8601 format (yyyy-MM-dd''T''HH:mm:ss) with
+          the user''s local time to get results tailored to a specific date and time
+          in the day. If not provided, it defaults to the current UTC time. Example:
+          "2014-10-23T09:00:00" for a user whose local time is 9AM.
+
+          '
+          type: string
+          in: query
+          name: timestamp
+        - "$ref": "#/parameters/trait:paged:limit"
+        - "$ref": "#/parameters/trait:paged:offset"
+      security:
+        - oauth_2_0: []
+  "/browse/categories":
+    get:
+      description: "[Get a List of Browse Categories](https://developer.spotify.com/web-api/get-list-categories/)\n"
+      operationId: GET_browse-categories
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+        - description: 'The desired language, consisting of an ISO 639 language code
+          and an ISO 3166-1 alpha-2 country code, joined by an underscore. For example:
+          es_MX, meaning "Spanish (Mexico)".
+
+          '
+          type: string
+          in: query
+          name: locale
+        - default: 20
+          minimum: 0
+          maximum: 50
+          description: The maximum number of category objects to return
+          type: integer
+          in: query
+          name: limit
+        - default: 0
+          description: The index of the first category to return
+          type: integer
+          in: query
+          name: offset
+      security:
+        - oauth_2_0: []
+  "/browse/categories/{category_id}":
+    get:
+      description: "[Get a Single Browse Category](https://developer.spotify.com/web-api/get-category/)\n"
+      operationId: GET_browse-categories-category_id
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+        - description: 'The desired language, consisting of an ISO 639 language code
+          and an ISO 3166-1 alpha-2 country code, joined by an underscore. For example:
+          es_MX, meaning "Spanish (Mexico)".
+
+          '
+          type: string
+          in: query
+          name: locale
+      security:
+        - oauth_2_0: []
+    parameters:
+      - description: The Spotify ID of the category you wish to fetch.
+        type: string
+        in: path
+        name: category_id
+        required: true
+  "/browse/categories/{category_id}/playlists":
+    get:
+      description: "[Get a Category's playlists](https://developer.spotify.com/web-api/get-categorys-playlists/)\n"
+      operationId: GET_browse-categories-category_id-playlists
+      responses:
+        '429':
+          description: 'API rate limit exceeded. See http://developer.spotify.com/web-api/user-guide/#rate-limiting
+            for details.
+
+            '
+      parameters:
+        - description: Is used to set specified media type.
+          type: string
+          in: header
+          name: Accept
+          required: true
+        - description: The country (an ISO 3166-1 alpha-2 country code)
+          type: string
+          in: query
+          name: country
+        - default: 20
+          minimum: 0
+          maximum: 50
+          description: The maximum number of playlist objects to return
+          type: integer
+          in: query
+          name: limit
+        - default: 0
+          description: The index of the first playlist to return
+          type: integer
+          in: query
+          name: offset
+      security:
+        - oauth_2_0: []
+    parameters:
+      - description: The Spotify ID of the category you wish to fetch.
+        type: string
+        in: path
+        name: category_id
+        required: true
+  "/me/following":
+    get:
+      description: "[Get User's Followed Artists](https://developer.spotify.com/web-api/get-followed/)\n"
+      operationId: GET_me-following
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: The type to unfollow (only artist is supported so far).
+          enum:
+            - artist
+          type: string
+          in: query
+          name: type
+        - description: The last artist ID retrieved from the previous request.
+          type: string
+          in: query
+          name: after
+        - default: 20
+          minimum: 0
+          maximum: 50
+          description: The maximum number of track objects to return
+          type: integer
+          in: query
+          name: limit
+      security:
+        - oauth_2_0:
+            - user-follow-read
+    put:
+      description: "[Follow Artists or Users](https://developer.spotify.com/web-api/follow-artists-users/)\n"
+      operationId: PUT_me-following
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: The type to follow.
+          enum:
+            - artist
+            - user
+          type: string
+          in: query
+          name: type
+        - required: true
+          description: A comma-separated list of the artists or users ids
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-follow-modify
+    delete:
+      description: "[Unfollow Artists or Users](https://developer.spotify.com/web-api/unfollow-artists-users/)\n"
+      operationId: DELETE_me-following
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: The type to unfollow.
+          enum:
+            - artist
+            - user
+          type: string
+          in: query
+          name: type
+        - required: true
+          description: A comma-separated list of the artists or users ids
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-follow-modify
+  "/me/following/contains":
+    get:
+      description: "[Check if Current User Follows Artists or Users](https://developer.spotify.com/web-api/check-current-user-follows/)\n"
+      operationId: GET_me-following-contains
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: The type to follow.
+          enum:
+            - artist
+            - user
+          type: string
+          in: query
+          name: type
+        - required: true
+          description: A comma-separated string of the artists or users ids.
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0:
+            - user-follow-read
+  "/audio-features":
+    get:
+      description: "[Get Audio Features for Several Tracks](https://developer.spotify.com/web-api/get-several-audio-features/)\n"
+      operationId: GET_audio-features
+      responses:
+        default:
+          description: ''
+      parameters:
+        - required: true
+          description: A comma-separated list of IDs
+          type: string
+          in: query
+          name: ids
+      security:
+        - oauth_2_0: []
+  "/audio-features/{id}":
+    get:
+      description: "[Get Audio Features for a Track](https://developer.spotify.com/web-api/get-audio-features/)\n"
+      operationId: GET_audio-features-id
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
+    parameters:
+      - type: string
+        in: path
+        name: id
+        description: Spotify Track ID
+        required: true
+  "/audio-analysis/{id}":
+    get:
+      description: "[Get Audio Analysis for a Track](https://developer.spotify.com/web-api/get-audio-analysis/)\n"
+      operationId: GET_audio-analysis-id
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
+    parameters:
+      - type: string
+        in: path
+        name: id
+        description: Spotify Track ID
+        required: true
+  "/recommendations":
+    get:
+      description: "[Get Recommendations Based on Seeds](https://developer.spotify.com/web-api/get-recommendations/)\n"
+      operationId: GET_recommendations
+      responses:
+        default:
+          description: ''
+      parameters:
+        - default: 20
+          minimum: 1
+          maximum: 100
+          description: The target size of the list of recommended tracks. For seeds
+            with unusually small pools or when highly restrictive filtering is applied,
+            it may be impossible to generate the requested number of recommended tracks.
+            Debugging information for such cases is available in the response.
+          type: integer
+          in: query
+          name: limit
+        - description: The market (an ISO 3166-1 alpha-2 country code). Because min_*,
+            max_* and target_* are applied to pools before relinking, the generated
+            results may not precisely match the filters applied. Original, non-relinked
+            tracks are available via the linked_from attribute of the relinked track
+            response.
+          type: string
+          in: query
+          name: market
+        - description: A comma-separated list of Spotify Artist IDs
+          type: string
+          in: query
+          name: seed_artists
+        - description: A comma separated list of genres. See the endpoint for fetching
+            the list of genres.
+          type: string
+          in: query
+          name: seed_genres
+        - description: A comma-separated list of Spotify Track IDs
+          type: string
+          in: query
+          name: seed_tracks
+        - minimum: 0
+          maximum: 1
+          description: Minimum acousticness
+          type: number
+          in: query
+          name: min_acousticness
+        - minimum: 0
+          maximum: 1
+          description: Maximum acousticness
+          type: number
+          in: query
+          name: max_acousticness
+        - minimum: 0
+          maximum: 1
+          description: Target acousticness
+          type: number
+          in: query
+          name: target_acousticness
+        - minimum: 0
+          maximum: 1
+          description: Minimum danceability
+          type: number
+          in: query
+          name: min_danceability
+        - minimum: 0
+          maximum: 1
+          description: Maximum danceability
+          type: number
+          in: query
+          name: max_danceability
+        - minimum: 0
+          maximum: 1
+          description: Target danceability
+          type: number
+          in: query
+          name: target_danceability
+        - description: Minimum duration of the track (ms)
+          type: integer
+          in: query
+          name: min_duration_ms
+        - description: Maximum duration of the track (ms)
+          type: integer
+          in: query
+          name: max_duration_ms
+        - description: Target duration of the track (ms)
+          type: integer
+          in: query
+          name: target_duration_ms
+        - minimum: 0
+          maximum: 1
+          description: Minimum energy
+          type: number
+          in: query
+          name: min_energy
+        - minimum: 0
+          maximum: 1
+          description: Maximum energy
+          type: number
+          in: query
+          name: max_energy
+        - minimum: 0
+          maximum: 1
+          description: Target energy
+          type: number
+          in: query
+          name: target_energy
+        - minimum: 0
+          maximum: 1
+          description: Minimum instrumentalness
+          type: number
+          in: query
+          name: min_instrumentalness
+        - minimum: 0
+          maximum: 1
+          description: Maximum instrumentalness
+          type: number
+          in: query
+          name: max_instrumentalness
+        - minimum: 0
+          maximum: 1
+          description: Target instrumentalness
+          type: number
+          in: query
+          name: target_instrumentalness
+        - minimum: 0
+          maximum: 11
+          description: Minimum key
+          type: integer
+          in: query
+          name: min_key
+        - minimum: 0
+          maximum: 11
+          description: Maximum key
+          type: integer
+          in: query
+          name: max_key
+        - minimum: 0
+          maximum: 11
+          description: Target key
+          type: integer
+          in: query
+          name: target_key
+        - minimum: 0
+          maximum: 1
+          description: Minimum liveness
+          type: number
+          in: query
+          name: min_liveness
+        - minimum: 0
+          maximum: 1
+          description: Maximum liveness
+          type: number
+          in: query
+          name: max_liveness
+        - minimum: 0
+          maximum: 1
+          description: Target liveness
+          type: number
+          in: query
+          name: target_liveness
+        - description: Minimum loudness
+          type: number
+          in: query
+          name: min_loudness
+        - description: Maximum loudness
+          type: number
+          in: query
+          name: max_loudness
+        - description: Target loudness
+          type: number
+          in: query
+          name: target_loudness
+        - minimum: 0
+          maximum: 1
+          description: Minimum mode (Major is represented by 1 and minor is 0)
+          type: integer
+          in: query
+          name: min_mode
+        - minimum: 0
+          maximum: 1
+          description: Maximum mode (Major is represented by 1 and minor is 0)
+          type: integer
+          in: query
+          name: max_mode
+        - minimum: 0
+          maximum: 1
+          description: Target mode (Major is represented by 1 and minor is 0)
+          type: integer
+          in: query
+          name: target_mode
+        - minimum: 0
+          maximum: 100
+          description: Minimum popularity
+          type: integer
+          in: query
+          name: min_popularity
+        - minimum: 0
+          maximum: 100
+          description: Maximum popularity
+          type: integer
+          in: query
+          name: max_popularity
+        - minimum: 0
+          maximum: 100
+          description: Target popularity
+          type: integer
+          in: query
+          name: target_popularity
+        - minimum: 0
+          maximum: 1
+          description: Minimum speechiness
+          type: number
+          in: query
+          name: min_speechiness
+        - minimum: 0
+          maximum: 1
+          description: Maximum speechiness
+          type: number
+          in: query
+          name: max_speechiness
+        - minimum: 0
+          maximum: 1
+          description: Target speechiness
+          type: number
+          in: query
+          name: target_speechiness
+        - description: Minimum tempo (BPM)
+          type: number
+          in: query
+          name: min_tempo
+        - description: Maximum tempo (BPM)
+          type: number
+          in: query
+          name: max_tempo
+        - description: Target tempo (BPM)
+          type: number
+          in: query
+          name: target_tempo
+        - maximum: 11
+          description: Minimum time signature
+          type: integer
+          in: query
+          name: min_time_signature
+        - description: Maximum time signature
+          type: integer
+          in: query
+          name: max_time_signature
+        - description: Target time signature
+          type: integer
+          in: query
+          name: target_time_signature
+        - minimum: 0
+          maximum: 1
+          description: Minimum valence
+          type: number
+          in: query
+          name: min_valence
+        - minimum: 0
+          maximum: 1
+          description: Maximum valence
+          type: number
+          in: query
+          name: max_valence
+        - minimum: 0
+          maximum: 1
+          description: Target valence
+          type: number
+          in: query
+          name: target_valence
+      security:
+        - oauth_2_0: []
+  "/recommendations/available-genre-seeds":
+    get:
+      description: "[Get Available Genre Seeds](https://developer.spotify.com/web-api/get-recommendations/#available-genre-seeds)\n"
+      operationId: GET_recommendations-available-genre-seeds
+      responses:
+        default:
+          description: ''
+      security:
+        - oauth_2_0: []
